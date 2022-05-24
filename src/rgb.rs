@@ -1,5 +1,5 @@
 use crate::{Lab, Xyz};
-use std::fmt;
+use std::fmt::{self, Write};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct Rgb {
@@ -41,6 +41,14 @@ impl Rgb {
 
     pub fn to_lab(&self) -> Lab {
         self.to_xyz().to_lab()
+    }
+
+    pub fn format_terminal(&self, background: bool) -> String {
+        let mut s = String::with_capacity(19);
+        s.write_str("\x1b[").unwrap();
+        s.write_str(if background { "48" } else { "38" }).unwrap();
+        write!(s, ";2;{};{};{}m", self.r, self.g, self.b).unwrap();
+        s
     }
 }
 
